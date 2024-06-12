@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de la Simulación</title>
+</head>
+<body>
+    <h1>Resultados de la Simulación</h1>
+    <div>
+        <img src="data:image/png;base64, {{ plot_url }}" alt="Gráfico de Tiempos de Espera">
+    </div>
+    <div>
+        <p>Media: {{ mean }}</p>
+        <p>Mediana: {{ median }}</p>
+        <p>Desviación Estándar: {{ std_dev }}</p>
+        <p>Varianza: {{ variance }}</p>
+        <p>Valor Máximo de Espera: {{ max_wait }}</p>
+        <p>Valor Mínimo de Espera: {{ min_wait }}</p>
+    </div>
+    <a href="/">Volver a la Simulación</a>
+</body>
+</html>
