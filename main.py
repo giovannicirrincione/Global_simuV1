@@ -6,96 +6,95 @@ import io
 import base64
 import numpy as np
 
-app = Flask(__name__)  # Inicializa la aplicación Flask
+app = Flask(__name__)
 
-# Modelo de SimPy sin aleatoriedad
+# Modelo de SimPy
 def simulate_queue(arrival_rate, service_rate, num_customers, queue_method):
-    env = simpy.Environment()  # Crea el entorno de simulación
+    env = simpy.Environment()
     if queue_method == "FIFO":
-        server = simpy.Resource(env, capacity=1)  # Define un recurso FIFO (Primero en llegar, primero en ser atendido)
+        server = simpy.Resource(env, capacity=1)
     else:
-        server = simpy.PriorityResource(env, capacity=1)  # Define un recurso LIFO (Último en llegar, primero en ser atendido) con prioridad
-    wait_times = []  # Lista para almacenar los tiempos de espera de los clientes
+        server = simpy.PriorityResource(env, capacity=1)
+    wait_times = []
 
     def customer(env, name, server, priority=0):
-        """
-        Proceso de un cliente.
-        El cliente solicita el recurso y registra su tiempo de espera.
-        """
-        arrival_time = env.now  # Tiempo de llegada del cliente
-        # Solicita el recurso con prioridad si no es FIFO, de lo contrario sin prioridad
-        with server.request(priority=priority) if queue_method != 'FIFO' else server.request() as request:
-            yield request  # Espera a que el recurso esté disponible
-            wait = env.now - arrival_time  # Calcula el tiempo de espera
-            wait_times.append(wait)  # Almacena el tiempo de espera
-            yield env.timeout(1 / service_rate)  # Simula el tiempo de servicio determinístico
+        arrival_time = env.now
+        if queue_method == 'FIFO':
+            with server.request() as request:
+                yield request
+                wait = env.now - arrival_time
+                wait_times.append(wait)
+                yield env.timeout(random.expovariate(service_rate))
+        else:
+            with server.request(priority=priority) as request:
+                yield request
+                wait = env.now - arrival_time
+                wait_times.append(wait)
+                yield env.timeout(random.expovariate(service_rate))
 
     def setup(env, arrival_rate, server):
-        """
-        Configura la llegada de clientes.
-        Los clientes llegan a intervalos determinísticos definidos por la tasa de llegada.
-        """
-        interval = 1 / arrival_rate  # Intervalo determinístico entre llegadas
         for i in range(num_customers):
-            env.process(customer(env, f'Customer {i+1}', server, priority=-i if queue_method == 'LIFO' else 0))
-            yield env.timeout(interval)  # Intervalo determinístico para la próxima llegada
+            yield env.timeout(random.expovariate(arrival_rate))
+            priority = -i if queue_method == 'LIFO' else 0
+            env.process(customer(env, f'Customer {i+1}', server, priority))
 
-    env.process(setup(env, arrival_rate, server))  # Inicia el proceso de llegada de clientes
-    env.run()  # Ejecuta la simulación hasta que todos los eventos hayan sido procesados
+    env.process(setup(env, arrival_rate, server))
+    env.run()
 
-    return wait_times  # Devuelve los tiempos de espera recopilados
+    return wait_times
 
 # Cálculo de estadísticas
 def calculate_statistics(wait_times):
-    """
-    Calcula estadísticas básicas de los tiempos de espera.
-    """
-    mean = np.mean(wait_times)  # Media
-    median = np.median(wait_times)  # Mediana
-    std_dev = np.std(wait_times)  # Desviación estándar
-    variance = np.var(wait_times)  # Varianza
-    max_wait = np.max(wait_times)  # Tiempo de espera máximo
-    min_wait = np.min(wait_times)  # Tiempo de espera mínimo
+    mean = np.mean(wait_times)
+    median = np.median(wait_times)
+    std_dev = np.std(wait_times)
+    variance = np.var(wait_times)
+    max_wait = np.max(wait_times)
+    min_wait = np.min(wait_times)
     
-    return mean, median, std_dev, variance, max_wait, min_wait  # Devuelve las estadísticas
+    return mean, median, std_dev, variance, max_wait, min_wait
 
 @app.route('/')
 def index():
-    """
-    Renderiza la página principal.
-    """
     return render_template('index.html')
 
 @app.route('/simulate', methods=['POST'])
 def simulate():
-    """
-    Ejecuta la simulación en respuesta a una solicitud POST.
-    Recoge parámetros del formulario, ejecuta la simulación y muestra los resultados.
-    """
-    arrival_rate = float(request.form['arrival_rate'])  # Recoge la tasa de llegada
-    service_rate = float(request.form['service_rate'])  # Recoge la tasa de servicio
-    num_customers = int(request.form['num_customers'])  # Recoge el número de clientes
-    queue_method = request.form['queue_method']  # Recoge el método de cola (FIFO o LIFO)
+    arrival_rate = float(request.form['arrival_rate'])
+    service_rate = float(request.form['service_rate'])
+    num_customers = int(request.form['num_customers'])
+    queue_method = request.form['queue_method']
 
-    wait_times = simulate_queue(arrival_rate, service_rate, num_customers, queue_method)  # Ejecuta la simulación
+    wait_times = simulate_queue(arrival_rate, service_rate, num_customers, queue_method)
 
-    mean, median, std_dev, variance, max_wait, min_wait = calculate_statistics(wait_times)  # Calcula las estadísticas
+    mean, median, std_dev, variance, max_wait, min_wait = calculate_statistics(wait_times)
 
-    # Crear gráfico de distribución de tiempos de espera
-    plt.figure(figsize=(10, 5))
+    # Crear gráfico de histograma y de cajas y bigotes
+    plt.figure(figsize=(15, 5))
+
+    # Histograma
+    plt.subplot(1, 2, 1)
     plt.hist(wait_times, bins=30, edgecolor='k')
     plt.title('Distribución de Tiempos de Espera')
     plt.xlabel('Tiempo de Espera')
     plt.ylabel('Frecuencia')
 
-    # Guardar gráfico en formato base64 para incrustarlo en HTML
+    # Cajas y Bigotes
+    plt.subplot(1, 2, 2)
+    plt.boxplot(wait_times, vert=False)
+    plt.title('Diagrama de Cajas y Bigotes')
+    plt.xlabel('Tiempo de Espera')
+
+    # Guardar ambos gráficos en formato base64
     img = io.BytesIO()
     plt.savefig(img, format='png')
     img.seek(0)
-    plot_url = base64.b64encode(img.getvalue()).decode('utf8')
+    plot_url_histogram = base64.b64encode(img.getvalue()).decode('utf8')
 
-    return render_template('result.html', plot_url=plot_url, mean=mean, median=median, 
+    plt.close()
+
+    return render_template('result.html', plot_url_histogram=plot_url_histogram, mean=mean, median=median, 
                            std_dev=std_dev, variance=variance, max_wait=max_wait, min_wait=min_wait)
 
 if __name__ == '__main__':
-    app.run(debug=True)  # Ejecuta la aplicación Flask en modo de depuración
+    app.run(debug=True)

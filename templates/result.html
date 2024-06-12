@@ -7,10 +7,18 @@
 </head>
 <body>
     <h1>Resultados de la Simulación</h1>
+
     <div>
-        <img src="data:image/png;base64, {{ plot_url }}" alt="Gráfico de Tiempos de Espera">
+        <!-- Histograma -->
+        
+        <img src="data:image/png;base64, {{ plot_url_histogram }}" alt="Gráfico de Tiempos de Espera (Histograma)">
     </div>
+
+   
+
     <div>
+        <!-- Estadísticas de la Simulación -->
+        <h2>Estadísticas</h2>
         <p>Media: {{ mean }}</p>
         <p>Mediana: {{ median }}</p>
         <p>Desviación Estándar: {{ std_dev }}</p>
@@ -18,6 +26,7 @@
         <p>Valor Máximo de Espera: {{ max_wait }}</p>
         <p>Valor Mínimo de Espera: {{ min_wait }}</p>
     </div>
+
     <a href="/">Volver a la Simulación</a>
 </body>
 </html>
