@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,26 +7,15 @@
 </head>
 <body>
     <h1>Resultados de la Simulación</h1>
-
-    <div>
-        <!-- Histograma -->
-        
-        <img src="data:image/png;base64, {{ plot_url_histogram }}" alt="Gráfico de Tiempos de Espera (Histograma)">
-    </div>
-
-   
-
-    <div>
-        <!-- Estadísticas de la Simulación -->
-        <h2>Estadísticas</h2>
-        <p>Media: {{ mean }}</p>
-        <p>Mediana: {{ median }}</p>
-        <p>Desviación Estándar: {{ std_dev }}</p>
-        <p>Varianza: {{ variance }}</p>
-        <p>Valor Máximo de Espera: {{ max_wait }}</p>
-        <p>Valor Mínimo de Espera: {{ min_wait }}</p>
-    </div>
-
-    <a href="/">Volver a la Simulación</a>
+    <img src="data:image/png;base64,{{ plot_url_histogram }}" alt="Histograma de Tiempos de Espera">
+    <p><strong>Media del Tiempo de Espera:</strong> {{ mean }}</p>
+    <p><strong>Mediana del Tiempo de Espera:</strong> {{ median }}</p>
+    <p><strong>Desviación Estándar del Tiempo de Espera:</strong> {{ std_dev }}</p>
+    <p><strong>Varianza del Tiempo de Espera:</strong> {{ variance }}</p>
+    <p><strong>Máximo Tiempo de Espera:</strong> {{ max_wait }}</p>
+    <p><strong>Mínimo Tiempo de Espera:</strong> {{ min_wait }}</p>
+    <p><strong>Clientes que se Retiraron:</strong> {{ num_retiros }}</p>
+    <br>
+    <a href="/">Volver</a>
 </body>
 </html>
