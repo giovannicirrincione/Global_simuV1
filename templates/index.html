@@ -70,10 +70,12 @@
     <div class="container">
         <h1>Simulación de Cola</h1>
         <form action="/simulate" method="POST">
-            <label for="arrival_rate">Tasa de Llegada:</label>
+            <label for="arrival_rate">Tasa de Llegada (minutos):</label>
             <input type="number" id="arrival_rate" name="arrival_rate" step="0.01" required>
-            <label for="service_rate">Tasa de Servicio:</label>
+            <label for="service_rate">Tasa de Servicio (minutos):</label>
             <input type="number" id="service_rate" name="service_rate" step="0.01" required>
+            <label for="capacity_resourse">Capacidad del recurso:</label>
+            <input type="number" id="capacity_resourse" name="capacity_resourse" required>
             <label for="num_customers">Número de Clientes:</label>
             <input type="number" id="num_customers" name="num_customers" required>
             <label for="queue_method">Método de Cola:</label>
@@ -81,7 +83,7 @@
                 <option value="FIFO">FIFO</option>
                 <option value="LIFO">LIFO</option>
             </select>
-            <label for="max_wait_time">Tiempo Máximo de Espera:</label>
+            <label for="max_wait_time">Tiempo Máximo de Espera (minutos):</label>
             <input type="number" id="max_wait_time" name="max_wait_time" step="0.01" required>
             <button type="submit">Simular</button>
         </form>
