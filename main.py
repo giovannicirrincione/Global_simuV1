@@ -9,7 +9,7 @@ import numpy as np
 app = Flask(__name__)
 
 # Modelo de SimPy
-def simulate_queue(arrival_rate, service_rate, num_customers, queue_method, max_wait_time):
+def simulate_queue(arrival_rate, service_rate, num_customers, queue_method, max_wait_time, capacity_resource):
     #Se crea el entorno de simulacion
     env = simpy.Environment()
     
@@ -92,10 +92,11 @@ def simulate():
     service_rate = float(request.form['service_rate'])
     num_customers = int(request.form['num_customers'])
     max_wait_time = float(request.form['max_wait_time'])
+    capacity_resourse = int(request.form['capacity_resourse'])
     queue_method = request.form['queue_method']
 
     # Ejecutar la simulación de la cola
-    wait_times, num_retiros = simulate_queue(arrival_rate, service_rate, num_customers, queue_method, max_wait_time)
+    wait_times, num_retiros = simulate_queue(arrival_rate, service_rate, num_customers, queue_method, max_wait_time, capacity_resourse)
 
     # Calcular estadísticas de los tiempos de espera
     mean, median, std_dev, variance, max_wait, min_wait = calculate_statistics(wait_times)
