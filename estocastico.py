@@ -38,7 +38,7 @@ def simulate_queue(arrival_rate, service_rate, num_customers, queue_method, max_
                     wait = env.now - arrival_time
                     wait_times.append(wait)
                     #simulamos con la distribucion exponencial el tiempo en el que se usara el recurso
-                    yield env.timeout(random.expovariate(service_rate))
+                    yield env.timeout(np.random.exponential(1/service_rate))
                 else:
                     # Si se supera el tiempo máximo de espera, el cliente se retira
                     num_retiros += 1
@@ -49,7 +49,7 @@ def simulate_queue(arrival_rate, service_rate, num_customers, queue_method, max_
                 if request in result:
                     wait = env.now - arrival_time
                     wait_times.append(wait)
-                    yield env.timeout(random.expovariate(service_rate))
+                    yield env.timeout(np.random.exponential(1/service_rate))
                 else:
                     num_retiros += 1
                    
