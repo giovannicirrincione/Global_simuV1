@@ -79,7 +79,7 @@ def calculate_statistics(wait_times):
     max_wait = np.max(wait_times)
     min_wait = np.min(wait_times)
     
-    return mean, median, std_dev, variance, max_wait, min_wait
+    return round(mean,2), round(median,2), round(std_dev,2), round(variance,2), round(max_wait,2), round(min_wait,2)
 
 @app.route('/')
 def index():
