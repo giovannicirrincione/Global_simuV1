@@ -1,11 +1,11 @@
 from flask import Flask, render_template, request
 import simpy
-import random
 import matplotlib.pyplot as plt
 import io
 import base64
 import numpy as np
 
+# Se crea una instancia de Flask
 app = Flask(__name__)
 
 # Modelo de SimPy
@@ -72,14 +72,16 @@ def simulate_queue(arrival_rate, service_rate, num_customers, queue_method, max_
 # Cálculo de estadísticas
 def calculate_statistics(wait_times):
     # Calcular estadísticas básicas de los tiempos de espera
-    mean = np.mean(wait_times)
-    median = np.median(wait_times)
-    std_dev = np.std(wait_times)
-    variance = np.var(wait_times)
+    mean = np.mean(wait_times) # Media
+    median = np.median(wait_times) # Mediana
+    std_dev = np.std(wait_times) # Variacion Estandar
+    variance = np.var(wait_times) # Varianza
     max_wait = np.max(wait_times)
     min_wait = np.min(wait_times)
     
     return round(mean,2), round(median,2), round(std_dev,2), round(variance,2), round(max_wait,2), round(min_wait,2)
+
+# Rutas de Flask
 
 @app.route('/')
 def index():
