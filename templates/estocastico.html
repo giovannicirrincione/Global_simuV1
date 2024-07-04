@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulación de Cola</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #F5F5F5, #D3D3D3);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #333;
+        }
+        h1 {
+            font-size: 2em;
+            color: #444;
+            margin-bottom: 20px;
+        }
+        form {
+            background: #FFF;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            border-color: #007BFF;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .container {
+            text-align: center;
+        }
+        .waiting-illustration {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Simulación de Cola</h1>
+        <form action="/simulate" method="POST">
+            <label for="arrival_rate">Tasa de Llegada:</label>
+            <input type="number" id="arrival_rate" name="arrival_rate" step="0.01" required>
+            <label for="service_rate">Tasa de Servicio:</label>
+            <input type="number" id="service_rate" name="service_rate" step="0.01" required>
+            <label for="capacity_resourse">Capacidad del recurso:</label>
+            <input type="number" id="capacity_resourse" name="capacity_resourse" required>
+            <label for="num_customers">Número de Clientes:</label>
+            <input type="number" id="num_customers" name="num_customers" required>
+            <label for="queue_method">Método de Cola:</label>
+            <select id="queue_method" name="queue_method" required>
+                <option value="FIFO">FIFO</option>
+                <option value="LIFO">LIFO</option>
+            </select>
+            <label for="max_wait_time">Tiempo Máximo de Espera:</label>
+            <input type="number" id="max_wait_time" name="max_wait_time" step="0.01" required>
+            <button type="submit">Simular</button>
+        </form>
+        
+    </div>
+</body>
+</html>
